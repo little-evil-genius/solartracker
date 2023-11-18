@@ -1,0 +1,102 @@
+#define STEPPER_PIN_1 8
+#define STEPPER_PIN_2 9
+#define STEPPER_PIN_3 10
+#define STEPPER_PIN_4 11
+int step_number = 0;
+
+int eingang1 = A0; // Pin für den ersten Fotowiderstand (LDR)
+int eingang2 = A1; // Pin für den zweiten Fotowiderstand (LDR)
+int sensorWert1 = 0; // Variable für den Sensorwert des ersten LDR mit 0 als Startwert
+int sensorWert2 = 0; // Variable für den Sensorwert des zweiten LDR mit 0 als Startwert
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(STEPPER_PIN_1, OUTPUT);
+  pinMode(STEPPER_PIN_2, OUTPUT);
+  pinMode(STEPPER_PIN_3, OUTPUT);
+  pinMode(STEPPER_PIN_4, OUTPUT);
+}
+
+void loop() {
+  sensorWert1 = analogRead(eingang1);
+  sensorWert2 = analogRead(eingang2);
+
+  Serial.print("Sensorwert 1 = ");
+  Serial.println(sensorWert1);
+
+  Serial.print("Sensorwert 2 = ");
+  Serial.println(sensorWert2);
+
+  if (sensorWert1 > sensorWert2) {
+    // Wenn mehr Licht auf LDR 1 scheint, drehe den Schrittmotor nach links
+    OneStep(true);
+  } else if (sensorWert2 > sensorWert1) {
+    // Wenn mehr Licht auf LDR 2 scheint, drehe den Schrittmotor nach rechts
+    OneStep(false);
+  }
+
+  delay(50);
+}
+
+void OneStep(bool dir){
+  if(dir){
+    switch(step_number){
+      case 0:
+        digitalWrite(STEPPER_PIN_1, HIGH);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+      case 1:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, HIGH);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+      case 2:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, HIGH);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+      case 3:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, HIGH);
+        break;
+    } 
+  } else {
+    switch(step_number){
+      case 0:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, HIGH);
+        break;
+      case 1:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, HIGH);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+      case 2:
+        digitalWrite(STEPPER_PIN_1, LOW);
+        digitalWrite(STEPPER_PIN_2, HIGH);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+      case 3:
+        digitalWrite(STEPPER_PIN_1, HIGH);
+        digitalWrite(STEPPER_PIN_2, LOW);
+        digitalWrite(STEPPER_PIN_3, LOW);
+        digitalWrite(STEPPER_PIN_4, LOW);
+        break;
+    }
+  }
+  
+  step_number++;
+  if(step_number > 3){
+    step_number = 0;
+  }
+}
