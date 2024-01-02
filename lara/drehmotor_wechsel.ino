@@ -25,20 +25,19 @@ void loop() {
   if (digitalRead(schalter1Pin) == HIGH) {
     delay(50); // Entprellen
     if (digitalRead(schalter1Pin) == HIGH) {
-      motor = false;
+      motor = true;
     }
   }
 
   if (digitalRead(schalter2Pin) == HIGH) {
     delay(50); // Entprellen
     if (digitalRead(schalter2Pin) == HIGH) {
-      motor = true;
+      motor = false;
     }
   }
  
   OneStep(motor);
   delay(2);
-  
 
 }
 
